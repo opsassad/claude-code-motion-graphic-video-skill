@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Motion video</title>
+<!--
+  A render(t) video page. Copy this file and motion.js next to your assets. Every frame is drawn by
+  render(t), a pure function of time in seconds: no CSS transitions, timers or Math.random, so the
+  recorder can ask for any exact moment. Helpers and ready-made moves are on window.MV (motion.js,
+  documented in references/moves.md; moves-demo.html uses every one).
+
+  Preview: open the file (it loops). Space pause, R restart, arrows +-5 s (one frame while paused),
+  F fullscreen, ?t=12.5 starts at 12.5 s. Record: node scripts/record.mjs this.html out.mp4
+
+  The DEMO block shows the basics. Delete it and build your own shots.
+-->
+<style>
+  /* Your brand's fonts: put the files in fonts/ and list them in start({ fonts }) */
+  /* @font-face { font-family: Brand; src: url(fonts/Brand-SemiBold.woff2) format('woff2'); font-weight: 600; } */
+  :root { --ink: #0A0A0A; --ink-2: #5B5E63; --paper: #FFFFFF; }
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  #stage { background: var(--paper); color: var(--ink); font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  .abs { position: absolute; }
+  .layer { position: absolute; inset: 0; }
+
+  /* DEMO styles */
+  .title { left: 140px; top: 380px; font-size: 96px; font-weight: 600; letter-spacing: -0.04em; line-height: 1.02; }
+  .sub { left: 144px; top: 520px; font-size: 36px; color: var(--ink-2); }
+  .card { left: 1200px; top: 250px; width: 560px; height: 580px; border-radius: 36px; background: linear-gradient(140deg, #E6ECFF, #FFE3EE);
+    box-shadow: 0 40px 100px -40px rgba(20, 30, 60, 0.45); will-change: transform; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- DEMO -->
+  <div class="layer" id="demo" style="perspective:1600px">
+    <div class="abs title" data-line>One idea per scene.</div>
+    <div class="abs sub" data-line>Every frame is render(t).</div>
+    <div class="abs card" id="card"></div>
+  </div>
+</div>
+<script src="motion.js"></script>
+<script>
+const { E, prog, mix, set, clamp, maskWords, rise, motionBlur, start } = MV;
+const $ = (id) => document.getElementById(id);
+const WIDTH = 1920, HEIGHT = 1080;  // 1080x1080 for square, 1080x1920 for vertical
+// Time-warp: [video time, scene time] pairs. Fit scenes to a recorded voice by moving the left column.
+const WARP = [[0, 0], [8, 8]];
+const DURATION = WARP[WARP.length - 1][0];
+const warp = (T) => {
+  let i = 0;
+  while (i < WARP.length - 2 && T > WARP[i + 1][0]) i++;
+  const [a, x] = WARP[i], [b, y] = WARP[i + 1];
+  return x + ((T - a) / (b - a)) * (y - x);
+};
+
+/* ── DEMO: word rise, 3D spring fly-in, whip out with motion blur ── */
+const demoLines = [...$('demo').querySelectorAll('[data-line]')].map(maskWords);
+const cardBlur = motionBlur($('card'));
+const cardX = (t) => {
+  const inP = E.spring(clamp((t - 0.6) / 1.6));
+  const out = prog(t, 6.4, 0.7, E.inExpo);
+  return { x: mix(500, 0, inP) - out * 1900, z: mix(-1500, 0, inP), ry: mix(-45, 0, inP) };
+};
+function renderDemo(t) {
+  rise(demoLines[0], t, 0.3, 6.2);
+  rise(demoLines[1], t, 0.9, 6.3);
+  const c = cardX(t), prev = cardX(t - 1 / 60);
+  set($('card'), { transform: `translate3d(${c.x}px, 0, ${c.z}px) rotateY(${c.ry}deg)`, opacity: clamp((t - 0.6) * 3) });
+  cardBlur(c.x - prev.x);
+}
+
+function render(T) {
+  const t = warp(T);
+  renderDemo(t);
+}
+
+start({ stage: $('stage'), width: WIDTH, height: HEIGHT, duration: DURATION, render /* , fonts: ['600 96px Brand'] */ });
+</script>
+</body>
+</html>

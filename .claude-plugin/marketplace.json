@@ -1,0 +1,28 @@
+{
+  "name": "opsassad-skills",
+  "owner": {
+    "name": "opsassad"
+  },
+  "metadata": {
+    "description": "Claude Code skills by opsassad. Starts with motion-video: a motion design studio as one skill, making launch films, explainers, ads and training videos in code from your real product, frame-exact.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "motion-video",
+      "description": "A motion design studio as a skill: asks what kind of video you need, reads your product's repo to understand the user journey and selling points, finds an original concept, plans every frame, then animates your real screens in code and records them frame-exact to mp4 (with voice fitting, music mix and delivery). Twelve kinds: launch film, hero ad, explainer, story film, character film, kinetic type, sizzle reel, teaser, mood showcase, walkthrough, showcase reel, data story.",
+      "source": "./",
+      "strict": false,
+      "version": "1.0.0",
+      "category": "creative",
+      "keywords": [
+        "video", "motion-graphics", "motion-design", "animation", "video-generation", "product-video",
+        "launch-video", "explainer-video", "promo-video", "marketing-video", "demo-video", "training-video",
+        "saas", "teaser", "sizzle-reel", "kinetic-typography", "ui-animation", "storyboard", "animatic",
+        "voice-over", "music-mix", "motion-blur", "social-media", "linkedin", "instagram-reels",
+        "after-effects-alternative", "html-to-video", "headless-chrome", "ffmpeg", "4k"
+      ],
+      "skills": ["./motion-video"]
+    }
+  ]
+}

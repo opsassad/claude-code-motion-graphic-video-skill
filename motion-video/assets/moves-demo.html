@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Moves demo</title>
+<!--
+  Every move in motion.js, used once, on a made-up tasks app, in the cinematic product film style.
+  It's both the test for the library and a template to read: each shot is a few lines.
+  Preview: open the file. Record: node ../scripts/record.mjs moves-demo.html demo.mp4
+-->
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  #stage { background: #f4f5f3; color: #0a0a0a; font-family: -apple-system, 'SF Pro Display', 'Inter', system-ui, sans-serif; font-feature-settings: 'tnum'; }
+  .shot { position: absolute; inset: 0; }
+  .card { position: absolute; inset: 0; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.35); }
+  .card i { position: absolute; left: 14px; height: 6px; border-radius: 3px; background: #d4d4d8; }
+  .row { position: absolute; left: 140px; width: 800px; height: 66px; background: #fff; border-radius: 12px; display: flex; align-items: center; padding: 0 24px; box-sizing: border-box; font-size: 20px; }
+  .tag { display: inline-block; border-radius: 8px; padding: 5px 12px; font-size: 15px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="shot" id="s1"></div>
+  <div class="shot" id="s2">
+    <div id="s2l" style="position:absolute;left:0;right:0;top:330px;text-align:center;font-size:44px;font-weight:600;color:#6b7280">Tasks done this week</div>
+    <div id="s2n" style="position:absolute;left:0;right:0;top:400px;text-align:center;font-size:260px;font-weight:700;letter-spacing:-0.05em;line-height:1"></div>
+  </div>
+  <div class="shot" id="s3"></div>
+  <div class="shot" id="s4">
+    <div class="card" id="big" style="left:220px;top:120px;width:640px;height:840px;right:auto;bottom:auto">
+      <div class="part" style="position:absolute;left:0;right:0;top:0;height:150px;background:#4f46e5"></div>
+      <div class="part" style="position:absolute;left:48px;top:190px;font-size:38px;font-weight:700">Launch week</div>
+      <div class="part" style="position:absolute;left:48px;top:262px;right:48px;height:70px;border-radius:12px;background:#f1f2f4;display:flex;align-items:center;padding:0 22px;font-size:24px">Ship the launch video</div>
+      <div class="part" style="position:absolute;left:48px;top:350px;right:48px;height:70px;border-radius:12px;background:#f1f2f4;display:flex;align-items:center;padding:0 22px;font-size:24px">Write the release notes</div>
+      <div class="part" style="position:absolute;left:48px;top:438px;right:48px;height:70px;border-radius:12px;background:#f1f2f4;display:flex;align-items:center;padding:0 22px;font-size:24px">Email the beta list</div>
+      <div class="part" style="position:absolute;left:48px;bottom:56px;font-size:20px;color:#6b7280">3 tasks · due Friday</div>
+    </div>
+  </div>
+  <div class="shot" id="s5"></div>
+  <div class="shot" id="s6"><div style="position:absolute;left:0;right:0;top:482px;text-align:center"><span id="chip" class="tag" style="font-size:58px;padding:18px 36px;border-radius:20px;background:#fff;box-shadow:0 0 0 3px #4f46e5,0 0 60px rgba(79,70,229,0.4)"></span></div></div>
+  <div class="shot" id="s7"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span id="word" style="font-weight:700;letter-spacing:-0.04em">Done.</span></div></div>
+  <div class="shot" id="s8"><div id="mark" style="position:absolute;left:470px;top:470px;width:140px;height:140px;border-radius:36px;background:#0a0a0a;display:flex;align-items:center;justify-content:center">
+    <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div></div>
+</div>
+<script src="motion.js"></script>
+<script>
+const { E, prog, mix, set, glow, press, shots, macroType, countUp, wall, buildIn, cascade, montage, growToWord, cursor, maskWords, rise, start } = MV;
+const $ = (id) => document.getElementById(id);
+const ACC = '#4f46e5';
+
+// 1. Macro typing, then the camera glides to "Add", which glows and is clicked
+const typeShot = macroType($('s1'), {
+  text: 'Ship the launch video', label: 'New task', start: 0.3, cps: 11, dur: 3.4,
+  after: (g) => `<div class="mv-add" style="position:absolute;left:${g.fieldRight + 40}px;top:${g.top}px;width:300px;height:${g.height}px;border-radius:26px;background:#0a0a0a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:76px;font-weight:600">Add</div>`,
+  panTo: { x: (g) => g.fieldRight + 190, start: 2.35, dur: 0.6 },
+});
+const s1 = (t) => {
+  typeShot(t);
+  typeShot.all('.mv-add').forEach((b) => set(b, { boxShadow: glow(ACC, prog(t, 2.7, 0.3), 4, 70), transform: `scale(${press(t, 3.1)})` }));
+};
+const pointer = cursor($('stage'), { path: [[2.55, 820, 920], [3.0, 548, 548], [3.4, 560, 560]], clicks: [3.1], on: [[2.55, 3.38]] });
+
+// 2. A number counts to its value
+const label2 = maskWords($('s2l'));
+const count2 = countUp($('s2n'), { from: 0, to: 128, start: 3.6, dur: 1.0 });
+const s2 = (t) => { rise(label2, t, 3.45); count2(t); };
+
+// 3. A wall of boards; one lights up; the camera dives into it
+const COLORS = ['#111827', '#166534', '#c2410c', '#475569', '#7c3aed', '#0f766e', '#4f46e5', '#1d4ed8', '#9a3412', '#334155', '#0e7490', '#4338ca', '#111827', '#166534'];
+const wallShot = wall($('s3'), {
+  items: COLORS.map((c, i) => `<div class="card"><b style="position:absolute;left:0;right:0;top:0;height:${i === 6 ? 18 : 26}%;background:${c}"></b>${[44, 52, 60, 68].map((y, j) => `<i style="top:${y}%;width:${[60, 100, 120, 80][j]}px"></i>`).join('')}</div>`),
+  cols: 7, cell: { w: 160, h: 210 }, gap: { x: 36, y: 36 }, left: 40, top: 300, lit: 6,
+  glide: { from: 60, to: -520, start: 5.2, dur: 2.4 }, litAt: 6.3, accent: ACC,
+  dive: { start: 7.5, dur: 0.7, to: { x: 540, y: 540, w: 640 } },
+});
+
+// 4. The one it dived into builds itself
+const build4 = buildIn([...document.querySelectorAll('#big .part')].slice(1), { start: 8.35, step: 0.25 });
+
+// 5. A list: Todo -> Done, cascading down
+const TASKS = ['Ship the launch video', 'Write the release notes', 'Email the beta list', 'Update the pricing page', 'Record the demo', 'Post on social', 'Thank the team', 'Plan next sprint', 'Fix the onboarding bug', 'Review analytics', 'Book the retro'];
+TASKS.forEach((n, i) => {
+  const r = MV.el('div', `top:${70 + i * 82}px`, `<span style="flex:1">${n}</span><span class="tag st"></span>`);
+  r.className = 'row';
+  $('s5').appendChild(r);
+});
+const rows = [...document.querySelectorAll('#s5 .row')];
+const cascade5 = cascade(rows, {
+  start: 10.5, step: 0.16, apply: (r, p, i, t, at) => {
+    const done = t >= at, st = r.querySelector('.st');
+    st.textContent = done ? 'Done' : 'Todo';
+    set(st, { background: done ? ACC : '#e5e7eb', color: done ? '#fff' : '#374151', transform: `scale(${done ? mix(0.6, 1, p) : 1})` });
+    r.style.boxShadow = done ? glow(ACC, 1 - prog(t, at, 0.5, E.lin), 3, 40) : '0 1px 2px rgba(0,0,0,0.05)';
+  },
+});
+const s5 = (t) => { $('s5').style.transform = `translateY(${mix(30, -50, prog(t, 10.2, 2.4, E.lin))}px)`; cascade5(t); };
+
+// 6. Montage, 7. one word, 8. the mark
+const s6 = montage($('chip'), { items: ['Reminders', 'Tags', 'Sharing', 'Calendar'], start: 12.6, step: 0.45 });
+const s7 = growToWord($('word'), { start: 14.55, color: ACC });
+const s8 = (t) => { const p = prog(t, 16.7, 0.6); set($('mark'), { opacity: p, transform: `scale(${mix(0.96, 1, p)})` }); };
+
+const cut = shots([
+  [$('s1'), 0, 3.4, s1], [$('s2'), 3.4, 5.2, s2], [$('s3'), 5.2, 8.2, wallShot], [$('s4'), 8.2, 10.2, build4],
+  [$('s5'), 10.2, 12.6, s5], [$('s6'), 12.6, 14.4, s6], [$('s7'), 14.4, 16.6, s7], [$('s8'), 16.6, 99, s8],
+]);
+start({ stage: $('stage'), duration: 18.5, render: (t) => { cut(t); pointer(t); } });
+</script>
+</body>
+</html>

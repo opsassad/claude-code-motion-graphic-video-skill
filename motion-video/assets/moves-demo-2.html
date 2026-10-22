@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Moves demo 2</title>
+<!--
+  The field-guide moves (references/patterns.md) in motion.js, each used once, on a made-up AI assistant
+  called "Lumen". Test for the library and a template to read. Square 1080, 36 s.
+  Preview: open the file. Record: node ../scripts/record.mjs moves-demo-2.html demo2.mp4
+-->
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  #stage { background: #f5f7fb; color: #0a0a0a; font-family: -apple-system, 'SF Pro Display', 'Inter', system-ui, sans-serif; font-feature-settings: 'tnum'; }
+  .shot { position: absolute; inset: 0; overflow: hidden; }
+  .center { position: absolute; left: 0; right: 0; text-align: center; }
+  .card { position: absolute; background: #fff; border-radius: 22px; box-shadow: 0 30px 80px -40px rgba(30, 40, 90, 0.35); }
+  .chip { display: inline-block; padding: 12px 20px; border-radius: 999px; background: #fff; font-size: 22px; box-shadow: 0 6px 20px -12px rgba(0, 0, 0, 0.25); }
+  .chip.on { background: #2563eb; color: #fff; }
+  .bar { height: 16px; border-radius: 8px; margin: 14px 0; }
+  .toast { position: absolute; left: 190px; top: 380px; width: 700px; height: 104px; border-radius: 24px; background: rgba(255, 255, 255, 0.92); box-shadow: 0 20px 50px -24px rgba(30, 40, 90, 0.4);
+    display: flex; align-items: center; gap: 20px; padding: 0 28px; box-sizing: border-box; font-size: 24px; }
+  .toast b { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 28px; }
+  .art { position: absolute; inset: 0; border-radius: 22px; overflow: hidden; }
+  .tile { position: absolute; inset: 0; background: #fff; border-radius: 16px; box-shadow: 0 16px 40px -24px rgba(30, 40, 90, 0.35); }
+  .tile i { position: absolute; left: 14%; height: 5%; border-radius: 4px; background: #e2e8f0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="shot" id="s1"><div id="title" class="center" style="top:430px;font-size:240px;font-weight:700;letter-spacing:-0.05em;white-space:nowrap">Introducing <span style="color:#2563eb">Lumen</span></div></div>
+  <div class="shot" id="s2" style="background:radial-gradient(70% 60% at 50% 55%, #1e2a5a 0%, #0b1020 70%);color:#fff"></div>
+  <div class="shot" id="s3" style="background:linear-gradient(160deg,#eef2ff 0%,#dbeafe 55%,#bfdbfe 100%)">
+    <div class="card" id="think" style="left:110px;top:240px;width:860px;padding:44px 52px;box-sizing:border-box">
+      <div style="display:flex;align-items:center;gap:18px;font-size:40px;font-weight:600"><span id="dots"></span>Thinking…</div>
+      <div id="reply" style="margin-top:22px;font-size:40px;line-height:1.4;color:#334155"></div>
+    </div>
+  </div>
+  <div class="shot" id="s4"><div id="assembled" class="center" style="top:470px;font-size:72px;font-weight:600;letter-spacing:-0.03em">An assistant that doesn't just answer</div></div>
+  <div class="shot" id="s5" style="background:#fff"></div>
+  <div class="shot" id="s6" style="background:linear-gradient(160deg,#eef2ff,#dbeafe)">
+    <div class="center" style="top:150px;font-size:30px;font-weight:600;display:flex;justify-content:center;align-items:center;gap:14px"><span id="dots6"></span>Make it a sunset poster</div>
+    <div id="flipper" style="position:absolute;left:290px;top:260px;width:500px;height:600px">
+      <div class="mv-front art" id="before"></div><div class="mv-back art" id="after"></div>
+    </div>
+  </div>
+  <div class="shot" id="s7" style="background:#f8fafc">
+    <div class="card" style="left:110px;top:270px;width:400px;height:540px;padding:34px;box-sizing:border-box">
+      <div style="font-size:26px;font-weight:600;margin-bottom:20px">Generating…</div>
+      <div class="bar sk" style="width:90%"></div><div class="bar sk" style="width:75%"></div><div class="bar sk" style="width:85%"></div><div class="bar sk" style="width:60%"></div>
+    </div>
+    <div id="gen" style="position:absolute;left:560px;top:270px;width:410px;height:540px;border-radius:22px;overflow:hidden"><div class="art" id="genArt"></div></div>
+  </div>
+  <div class="shot" id="s8" style="background:#fff">
+    <svg width="1080" height="1080" style="position:absolute;inset:0">
+      <g fill="none" stroke="#93c5fd" stroke-width="2.5">
+        <path class="ln" d="M-20 260 C 260 260, 360 420, 540 420"/><path class="ln" d="M-20 420 C 240 420, 330 420, 540 420"/><path class="ln" d="M-20 580 C 260 580, 360 420, 540 420"/>
+        <path class="ln" d="M1100 260 C 820 260, 720 420, 540 420"/><path class="ln" d="M1100 420 C 840 420, 750 420, 540 420"/><path class="ln" d="M1100 580 C 820 580, 720 420, 540 420"/>
+      </g>
+      <g fill="#2563eb"><circle class="dt" r="6"/><circle class="dt" r="6"/><circle class="dt" r="6"/><circle class="dt" r="6"/><circle class="dt" r="6"/><circle class="dt" r="6"/></g>
+    </svg>
+    <div id="hub" style="position:absolute;left:460px;top:340px;width:160px;height:160px;border-radius:40px;background:#fff;box-shadow:0 20px 60px -20px rgba(37,99,235,0.5);display:flex;align-items:center;justify-content:center;font-size:72px;color:#2563eb">✦</div>
+    <div id="tick" style="position:absolute;left:0;top:700px;width:1080px;height:300px"></div>
+  </div>
+  <div class="shot" id="s9" style="background:linear-gradient(160deg,#eef2ff,#e0e7ff)">
+    <div class="center" style="top:200px"><span id="run" style="display:inline-block;padding:22px 44px;border-radius:999px;background:#2563eb;color:#fff;font-size:34px;font-weight:600">Run my morning</span></div>
+    <div class="toast" id="t1"><b style="background:#10b981">✓</b>Inbox sorted: 3 need you today</div>
+    <div class="toast" id="t2"><b style="background:#f59e0b">✎</b>Meeting notes summarised</div>
+    <div class="toast" id="t3"><b style="background:#6366f1">◷</b>Focus time booked, 2–4 pm</div>
+  </div>
+  <div class="shot" id="s10" style="background:#f5f7fb"></div>
+  <div class="shot" id="s11" style="background:#fff"><div id="sentence" class="center" style="top:470px;font-size:84px;font-weight:700;letter-spacing:-0.04em">Lumen thinks with you.</div></div>
+  <div class="shot" id="s12" style="background:radial-gradient(60% 60% at 50% 50%, #1e2a5a, #070a14);color:#fff">
+    <div class="center" style="top:440px;font-size:110px;font-weight:700;letter-spacing:-0.04em">Lumen<span style="color:#60a5fa">✦</span></div>
+    <div id="url" class="center" style="top:600px;font-size:34px;color:#cbd5e1"></div>
+    <div class="chip fl" style="position:absolute;left:120px;top:220px;background:rgba(255,255,255,0.1);color:#e2e8f0">Draft a reply</div>
+    <div class="chip fl" style="position:absolute;left:700px;top:260px;background:rgba(255,255,255,0.1);color:#e2e8f0">Plan my week</div>
+    <div class="chip fl" style="position:absolute;left:180px;top:800px;background:rgba(255,255,255,0.1);color:#e2e8f0">Summarise this</div>
+    <div class="chip fl" style="position:absolute;left:660px;top:820px;background:rgba(255,255,255,0.1);color:#e2e8f0">Make a poster</div>
+  </div>
+</div>
+<script src="motion.js"></script>
+<script>
+const { E, prog, mix, set, clamp, shots, macroType, glowRim, typeText, streamText, thinking, shimmer, assemble, wordToSentence, wordTexture,
+  iris, pixelReveal, sweep, flip, scanReveal, develop, ticker, drawPath, toasts, liftOut, ripple, drift, wall, press, start } = MV;
+const $ = (id) => document.getElementById(id);
+const BLUE = '#2563eb';
+
+// A drawn "photo" (flat, grey) and its stylised version (vivid sunset): stand-ins for real images
+const art = (vivid) => `<div style="position:absolute;inset:0;background:${vivid ? 'linear-gradient(180deg,#f97316,#ec4899 55%,#7c3aed)' : 'linear-gradient(180deg,#cbd5e1,#94a3b8)'}"></div>
+  ${vivid ? '<div style="position:absolute;left:50%;top:44%;width:160px;height:160px;margin-left:-80px;border-radius:50%;background:#fde68a;box-shadow:0 0 80px 20px rgba(253,230,138,0.6)"></div>' : ''}
+  <div style="position:absolute;left:-10%;right:-10%;bottom:0;height:46%;background:${vivid ? '#4c1d95' : '#64748b'};clip-path:polygon(0 100%,0 40%,22% 8%,40% 45%,58% 0,78% 38%,100% 15%,100% 100%)"></div>
+  <div style="position:absolute;left:-10%;right:-10%;bottom:0;height:28%;background:${vivid ? '#1e1b4b' : '#475569'};clip-path:polygon(0 100%,0 30%,30% 0,55% 40%,80% 10%,100% 35%,100% 100%)"></div>`;
+$('before').innerHTML = art(false);
+$('after').innerHTML = art(true);
+$('genArt').innerHTML = art(true);
+
+// 1. Oversized title slides across, then shrinks to a normal centred line
+const s1 = (t) => {
+  // One continuous move: it glides in from the right, slows, and shrinks into place (no linear stretch, no hard stop)
+  const p = prog(t, 0, 2.4, E.inOutStrong);
+  set($('title'), { transform: `translateX(${mix(900, 0, p)}px) scale(${mix(1, 0.3, prog(t, 1.2, 1.2, E.inOutStrong))})` });
+};
+
+// 2. Dark world: the prompt pill with a glowing rim, typed in a close-up
+const ask = macroType($('s2'), {
+  text: 'Plan a trip that my kids will love', start: 3.0, cps: 13, dur: 3.6, font: { size: 100, weight: 500 },
+  fieldBg: '#111827', fieldBorder: '#111827', angle: [16, 0, -4], blur: 6,
+});
+let rim;
+const s2 = (t) => {
+  ask(t);
+  if (!rim) rim = glowRim(ask.all('.mv-field')[0], { start: 2.7, radius: '60px' });
+  rim(t);
+};
+
+// 3. The world turns light; thinking, then the reply streams in and the card grows
+const dots3 = thinking($('dots'), { start: 6.6, end: 8.0 });
+const reply = streamText($('reply'), { text: 'Three days in the hills: a short waterfall hike on Saturday, a farm visit on Sunday morning, and a cabin with a fire pit. Want me to book it?', start: 7.6, wps: 10 });
+const s3 = (t) => {
+  dots3(t); reply(t);
+  const p = prog(t, 6.4, 0.6);
+  set($('think'), { opacity: p, transform: `translateY(${(1 - p) * 40}px)` });
+};
+const wipe = sweep($('stage'), { start: 9.8, dur: 0.9 });
+
+// 4. Scattered words assemble
+const s4 = assemble($('assembled'), { start: 10.4, dur: 1.0 });
+
+// 5. Word texture, one in focus
+const s5 = wordTexture($('s5'), { word: 'create', start: 13.3, accent: BLUE });
+
+// 6. Before -> after flip
+const dots6 = thinking($('dots6'), { start: 15.9, end: 17.4, size: 9 });
+const flipShot = flip($('flipper'), { start: 17.2, dur: 0.9 });
+const s6 = (t) => { dots6(t); flipShot(t); };
+
+// 7. Generated image scans in beside shimmering skeleton lines
+const sk = shimmer([...document.querySelectorAll('.sk')], { start: 19.0, end: 21.0 });
+const scan = scanReveal($('gen'), { start: 19.4, dur: 1.4 });
+const s7 = (t) => { sk(t); scan(t); };
+
+// 8. Lines draw into the hub with dots travelling; a ticker of requests scrolls below
+const lines = [...document.querySelectorAll('.ln')].map((p, i) => drawPath(p, { start: 21.8 + i * 0.12, dur: 0.9, dot: document.querySelectorAll('.dt')[i] }));
+const tick = ticker($('tick'), {
+  rows: [['Summarise this thread', 'Plan my week', 'Draft a reply'].map((x, i) => `<span class="chip${i === 1 ? ' on' : ''}">${x}</span>`),
+    ['Make a poster', 'Find a time for all of us', 'What did I miss?'].map((x, i) => `<span class="chip${i === 2 ? ' on' : ''}">${x}</span>`),
+    ['Translate to Spanish', 'Book the cabin', 'Explain like I’m 10'].map((x) => `<span class="chip">${x}</span>`)],
+  speed: 70,
+});
+const s8 = (t) => { lines.forEach((l) => l(t)); tick(t); set($('hub'), { transform: `scale(${E.spring(clamp((t - 21.7) / 0.6))})` }); };
+
+// 9. A press with ripple rings; results arrive as a toast stack
+const ring9 = ripple($('s9'), { at: 25.0, x: 540, y: 237, color: BLUE });
+const stack = toasts([{ node: $('t1'), at: 25.4 }, { node: $('t2'), at: 26.0 }, { node: $('t3'), at: 26.6 }]);
+const s9 = (t) => { ring9(t); stack(t); $('run').style.transform = `scale(${press(t, 25.0)})`; };
+
+// 10. Zoom-out reveal: from inside one card back to a wall of them; then one lifts out
+const TILE = (c, label) => `<div class="tile"><div style="position:absolute;left:14%;top:12%;width:22%;aspect-ratio:1;border-radius:12px;background:${c}"></div><div style="position:absolute;left:14%;top:38%;font-size:15px;font-weight:600">${label}</div><i style="top:56%;width:70%"></i><i style="top:66%;width:50%"></i></div>`;
+const LABELS = ['Inbox triage', 'Trip planner', 'Poster maker', 'Notes', 'Budget', 'Study buddy', 'Recipes', 'Workouts', 'Meetings', 'Translate', 'Writing', 'Research', 'Calendar', 'Shopping', 'Code help'];
+const COLORS = ['#10b981', '#2563eb', '#ec4899', '#f59e0b', '#6366f1', '#14b8a6', '#ef4444', '#8b5cf6', '#0ea5e9', '#22c55e', '#f97316', '#a855f7', '#3b82f6', '#e11d48', '#0f766e'];
+const wallShot = wall($('s10'), {
+  items: LABELS.map((l, i) => TILE(COLORS[i], l)), cols: 5, cell: { w: 180, h: 200 }, gap: { x: 24, y: 24 }, left: 30, top: 230, lit: 7,
+  glide: { from: 0, to: 0, start: 0, dur: 1 }, litAt: 29.6, accent: BLUE,
+  emerge: { start: 27.6, dur: 1.2, from: { x: 540, y: 540, w: 760 } },
+});
+const lift = liftOut(wallShot.nodes[7], wallShot.nodes.filter((_, i) => i !== 7), { start: 29.4 });
+const s10 = (t) => { wallShot(t); lift(t); };
+
+// 11. One word grows into the sentence, revealed through a pixel dissolve
+const grow = wordToSentence($('sentence'), { start: 31.2, accent: BLUE });
+const pix = pixelReveal($('s11'), { start: 30.6, dur: 0.7 });
+const s11 = (t) => { pix(t); grow(t); };
+
+// 12. Iris into the end; the URL types; floating chips drift
+const ir = iris($('s12'), { start: 33.6, dur: 0.8 });
+const url = typeText($('url'), { text: 'lumen.app', start: 34.6, cps: 12 });
+const fl = drift([...document.querySelectorAll('.fl')].map((node, i) => ({ node, depth: i % 2 ? 0.7 : 0.2 })));
+const s12 = (t) => { ir(t); url(t); fl(t); };
+
+const cut = shots([
+  [$('s1'), 0, 2.6, s1], [$('s2'), 2.6, 6.4, s2], [$('s3'), 6.4, 10.25, s3], [$('s4'), 10.25, 13.2, s4], [$('s5'), 13.2, 15.8, s5],
+  [$('s6'), 15.8, 19.0, s6], [$('s7'), 19.0, 21.6, s7], [$('s8'), 21.6, 24.6, s8], [$('s9'), 24.6, 27.4, s9], [$('s10'), 27.4, 31.4, s10],
+  [$('s11'), 30.6, 34.4, s11], [$('s12'), 33.6, 99, s12],
+]);
+start({ stage: $('stage'), duration: 36, render: (t) => { cut(t); wipe(t); } });
+</script>
+</body>
+</html>
